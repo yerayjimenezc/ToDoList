@@ -7,22 +7,44 @@ let buttonCounter = 0
 
 
 function addTodo() {
-  let newTodo = document.createElement('div')
-  newTodo.setAttribute('class', 'container-note')
-  newTodo.innerHTML = `<span id="note">${task.value}</span><button id="delete-button-${buttonCounter}">¡Done!</button>`
-  list.appendChild(newTodo)
-  buttonCounter++
-  task.value = ''
-  pendingTasks.innerText = taskCounter++
+    taskCounter++
+    let newTodo = document.createElement('div')
+    newTodo.setAttribute('class', 'container-note')
+    newTodo.innerHTML = `<input id="check-${buttonCounter}" type="checkbox"><span id="note">${task.value}</span><button id="delete-button-${buttonCounter}">Delete</button>`
+    list.appendChild(newTodo)
+    let deleteButton = document.getElementById(`delete-button-${buttonCounter}`)
+    deleteButton.onclick = deleteNote
+    let checkDone = document.getElementById(`check-${buttonCounter}`)
+    checkDone.onchange = checkDoneBackground
+    buttonCounter++
+    task.value = ''
+    pendingTasks.innerText = taskCounter
 }
 
 addButton.onclick = addTodo
 
+task.onkeydown = (e) => {
+    if(e.key === 'Enter'){
+        addTodo()
+    }
+}
 
-// const deleteButton = document.getElementById('delete-button')
+function deleteNote(e) {
+    list.removeChild(e.target.parentNode)
+    if (e.target.parentNode.getAttribute('class') === 'container-note'){
+        taskCounter--
+        pendingTasks.innerText = taskCounter
+    }
+}
 
-// function deleteTodo() {
-    
-// }
-
-// deleteButton.onclick = deleteTodo
+function checkDoneBackground(e) {
+    if(e.target.parentNode.getAttribute('class') === 'container-note-check'){
+        e.target.parentNode.setAttribute('class', 'container-note')
+        taskCounter++
+        pendingTasks.innerText = taskCounter
+    } else {
+        e.target.parentNode.setAttribute('class', 'container-note-check')
+        taskCounter--
+        pendingTasks.innerText = taskCounter
+    }
+}
